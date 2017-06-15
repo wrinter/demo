@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<script>
+		//demo1
+		document.write("demo1 ")
+			for(let i =0 ;i<5;i++){//1.let 只是在当前模块有效 //2.var 在模块外也有效
+//				document.write(i)
+			}
+//			document.write(i)
+		//demo2
+		document.write("demo2 ")
+			var a = [];
+			for(var i = 0 ; i < 9 ;i++){
+				a[i] = function(){//原生的写法  相当于函数实例化
+					console.log(i)
+				}
+			}
+			a[6]();
+		//demo3
+			for(let i = 0 ; i < 3;i++){
+				let i = "wrinter";
+				console.log(i);//属出三遍wrinter  这表明函数内部的变量i和外部的变量i是分离的。
+			}
+		//demo4
+			let hh = "4";//let命令改变了语法行为，它所声明的变量一定要在声明后使用，否则报错。
+			console.log(hh)
+		//demo5  暂时性死区  只要块级作用域内存在let命令，它所声明的变量就“绑定”（binding）这个区域，不再受外部的影响。
+			var tmp = "123";
+			if(true){
+				let tmp;
+				tmp = "abc";
+				console.log(tmp)
+			}
+		//demo6 ES6明确规定，如果区块中存在let和const命令，这个区块对这些命令声明的变量，从一开始就形成了封闭作用域。凡是在声明之前就使用这些变量，就会报错。所以typeof 不是
+		//百分百安全
+			if (true) {
+			  // TDZ开始
+			  //tmp = 'abc'; // ReferenceError
+			  //console.log(tmp); // ReferenceError
+			
+			  let tmp; // TDZ结束
+			  console.log(tmp); // undefined
+			
+			  tmp = 123;
+			  console.log(tmp); // 123
+			}
+			//typeof x; // ReferenceError
+			let x;
+		//demo7 隐蔽性死区
+//			function bar(x=y,y=2){
+//				return console.log([x,y]);
+//			}
+			//正确
+			function bar(y=2,x=y){
+				return console.log([x,y]);
+			}
+			bar();
+		//demo8 不能重复声明同一个变量
+		//demo9 ES5 只有全局作用域和函数作用域，没有块级作用域，这带来很多不合理的场景。第一种场景，内层变量可能会覆盖外层变量。
+			var tmp = new Date();
+			function f() {
+			  if (false) {
+			    var tmp = 'hello world';
+			  }
+			  console.log(tmp);
+			}
+			f();
+		//demo10 let 实际上let实际上为 JavaScript 新增了块级作用域。
+			function f1() {
+			  let n = 5;
+			  if (true) {
+			    let n = 10;
+			    console.log(n)//10
+			  }
+			  console.log(n); // 5
+			}
+			f1()
+		//demo11 1.ES6 允许块级作用域的任意嵌套。2.外层作用域无法读取内层作用域的变量。3.内层作用域可以定义外层作用域的同名变量。
+			{{{{
+			  let insane = 'Hello World';
+			  {
+			  	let insane = 'Hello'
+			  	console.log(insane)
+			  }
+			  console.log(insane)
+			}}}};
+		//demo12 ES6 规定，块级作用域之中，函数声明语句的行为类似于let，在块级作用域之外不可引用。 考虑到环境导致的行为差异太大，应该避免在块级作用域内声明函数。如果确实需要，也应该写成函数表达式，而不是函数声明语句。
+			// 函数声明语句
+			{
+			  let a = '123456';
+			  function f() {
+			    return a;
+			  }
+			}
+			// 函数表达式
+			{
+			  let a = 'chao';
+			  let f = function () {
+			    return a;
+			  };
+			}
+		//demo13 do 表达式       块级作用域是一个语句，将多个操作封装在一起，没有返回值。
+		//现在使得块级作用域可以变为表达式，也就是说可以返回值，办法就是在块级作用域之前加上do，使它变为do表达式。
+//			let x = do {
+//				let t = 2;
+//				t * t + 1;
+//			};
+//			console.log(x)
+		//demo14 const 和 let  一样块集作用域     声明一个只读的常量。一旦声明，常量的值就不能改变。
+			const p = 3.34 ;
+//				p = 3;
+			console.log(p)
+		//demo15 对象
+			const foo = {}
+			foo.foo = 123
+			console.log(foo)
+			const c = [];
+			c.push("1")//可执行
+			c.length = 0;//可执行
+			console.log(c)
+			const d = ["a","b"]
+			console.log(d)
+			const ffoo = Object.freeze({});//将ffoo对象冻结Object.freeze()
+			ffoo.foo = 1123;//不执行
+			console.log(ffoo)
+		//demo16 对象彻底冻结
+			var constantize = (obj) => {
+			  Object.freeze(obj);
+			  Object.keys(obj).forEach( (key, i) => {
+			    if ( typeof obj[key] === 'object' ) {
+			      constantize( obj[key] );
+			    }
+			  });
+			};
+		//demo17   顶层对象
+			const z = 1;//let const 不是全局变量的属性
+			console.log(window.z)
+		</script>
+	</body>
+</html>
